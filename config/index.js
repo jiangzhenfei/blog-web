@@ -11,10 +11,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/':{
-        target: 'http://47.93.103.19:30010',
+      '/blog':{
+        target: 'http://127.0.0.1:5000',
         changeOrigin: true,
-        
+        pathRewrite:{
+          '^/blog': ''
+        }
       }
     },
 

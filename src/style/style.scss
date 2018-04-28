@@ -1,0 +1,17 @@
+html,body{
+    background: #f5f5f5;
+}
+.only{
+    .ivu-breadcrumb{
+        a{
+            color:#fff;
+        }
+        >span:last-child{
+            color:#fff;
+        }
+        
+    }
+}
+pre{
+    background: #f5f2f0;
+}
