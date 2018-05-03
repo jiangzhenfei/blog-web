@@ -27,7 +27,7 @@ export default {
 	},
 	methods:{
 		go(){
-			this.$router.push('writeBlog')
+			this.$router.push('blogDir')
 		}
            
 	}

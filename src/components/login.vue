@@ -28,6 +28,8 @@
 
 <script>
     import axios from '@/service/axios'
+    import {setCookie,delCookie} from '@/utils/cookie'
+    import iView from 'iview';
     export default {
         name:'',
         data(){
@@ -60,9 +62,29 @@
                 this.$refs['login'].validate((valid) => {
                     if (valid) {
                         axios.post('blog/login', this.form).then((e)=>{
-                            console.log('success',e)
+                            if(e.data.success){
+                                setCookie('token',e.data.response,30)
+                                iView.Notice.success({
+                                    title: '登录成功!',
+                                });
+                                /**
+                                 * 关闭模态框的
+                                 * 修改父组件的if组件if状态，是的下次进来还是会调用该组件生命周期
+                                 */
+                                this.showHostToScale = false;
+                                setTimeout(()=>{
+                                    this.$emit('setcreatemodal','success')
+                                },500)
+                            }else{
+                                iView.Notice.error({
+                                    title: e.data.message,
+                                });
+                            }
+                            
                         },(err)=>{
-                            console.log('error',err)
+                            iView.Notice.error({
+                                title: err.message,
+                            });
                         })
                     } else {
                         this.$Message.error('Fail!');

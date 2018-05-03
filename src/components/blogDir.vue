@@ -18,10 +18,18 @@
                                 <p>编写博客</p>
                             </a>
                         </Col>
-                        <Col span="6">
+                        <Col span="6" v-if="!isLogin">
                             <a @click="showCreate=true" class="no-btn">
                                 <div class="login"></div>
                                 <p>登入</p>
+                            </a>
+                        </Col>
+                        <Col span="6" v-else>
+                            <a class="no-btn">
+                                <div class="login">
+                                    <Icon type="male" size="20"></Icon>
+                                </div>
+                                <p>{{userName}}</p>
                             </a>
                         </Col>
                     </Row>
@@ -85,6 +93,9 @@
 <script>
 import login from './login'; 
 import axios from '@/service/axios'
+import {setCookie,getCookie} from '@/utils/cookie'
+import iView from 'iview';
+
 export default {
     name: 'BlogDir',
     components:{
@@ -92,6 +103,8 @@ export default {
     },
   	data () {
     	return {
+            isLogin:false,
+            userName:'',
             showCreate:false,
             blogLists:[],
             searchText:''
@@ -99,8 +112,16 @@ export default {
     },
     mounted(){
         this.getBlogList()
+        this.initStatus()
     },
 	methods:{
+        /*初始化用户登录状态*/
+        initStatus(){
+            if(getCookie('token')){
+                this.isLogin = true;
+                this.userName = getCookie('token')
+            }
+        },
         getBlogList(){
             axios.get('blog/list').then((e)=>{
                 if(e.data.success){
@@ -116,7 +137,13 @@ export default {
         },
         /*新建博客洁敏 */
         addBlog(){
-            this.$router.push('writeBlog')
+            if(getCookie('token')){
+                this.$router.push('writeBlog')
+            }else{
+                iView.Notice.error({
+                    title: '请先登录!',
+                });
+            }
         },
         /*登入模态框 */
         setCreateModal(e){
@@ -139,7 +166,7 @@ export default {
     top:0;
     left:0;
     width: 100%;
-    z-index: 9999;
+    z-index: 1;
     height: 60px;
     padding-top:10px;
     padding: 10px 20px;
@@ -155,9 +182,13 @@ export default {
     .login{
         width: 30px;
         height: 30px;
-        border: 1px solid #2d8cf0;
+        border: 1px solid #666;
         border-radius: 50%;
         margin: auto;
+        i{
+            margin-left:7px;
+            margin-top: 4px;
+        }
     }
     p{
         text-align: center;
@@ -165,6 +196,7 @@ export default {
     .no-btn{
         border:none;
         background:#fff;
+        color:#666;
 
     }
 }
